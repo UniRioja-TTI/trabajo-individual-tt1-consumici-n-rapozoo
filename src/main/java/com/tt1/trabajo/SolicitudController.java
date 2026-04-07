@@ -45,7 +45,7 @@ public class SolicitudController {
                     errors.add(key + " no puede ser negativo");
                 }
                 int id = Integer.parseInt(key);
-                if (ics.isValidEntityId()) {
+                if (ics.isValidEntityId(id)) {
                 	validData.put(id, num);
                 } else {
                 	errors.add(key + "no se corresponde con una entidad");
