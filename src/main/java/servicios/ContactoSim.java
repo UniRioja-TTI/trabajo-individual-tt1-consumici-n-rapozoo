@@ -14,7 +14,7 @@ import modelo.DatosSolicitud;
 import modelo.Entidad;
 
 @Service
-public class ContactoSim implements InterfazContactoSim {
+public class ContactoSim { /*implements InterfazContactoSim {
 
 	private List<Entidad> entidades;
     private Map<Integer, DatosSolicitud> solicitudes;
@@ -57,5 +57,5 @@ public class ContactoSim implements InterfazContactoSim {
 	public boolean isValidEntityId(int ticket) {
 		return solicitudes.containsKey(ticket);
 	}
-
+*/
 }

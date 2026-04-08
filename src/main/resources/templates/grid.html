@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de la Simulación</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+
+    <h1>Cuadrícula Final</h1>
+    
+    <div th:if="${error}" style="color: red;" th:text="${error}"></div>
+
+    <div th:if="${grid != null}" style="display: inline-block; border: 2px solid black;">
+        
+        <div th:each="fila : ${grid}" style="display: flex;">
+            
+            <div th:each="color : ${fila}" 
+                 th:style="'width: 30px; height: 30px; border: 1px solid #ccc; background-color: ' + ${color} + ';'">
+            </div>
+            
+        </div>
+        
+    </div>
+
+</body>
+</html>

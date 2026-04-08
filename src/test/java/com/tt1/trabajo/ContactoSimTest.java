@@ -12,13 +12,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import interfaces.InterfazContactoSim;
 import modelo.DatosSolicitud;
 import modelo.Entidad;
+import servicios.ContactoSimAPI;
 import servicios.ContactoSim;
 
 class ContactoSimTest {
 
-	private ContactoSim contactoSim;
+	private InterfazContactoSim contactoSim;
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 	}
@@ -29,8 +31,8 @@ class ContactoSimTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		contactoSim = new ContactoSim();
-	}
+		servicios.LoggerConfig loggerConfig = new servicios.LoggerConfig();
+		contactoSim = new ContactoSimAPI(loggerConfig.simulationLogger());	}
 
 	@AfterEach
 	void tearDown() throws Exception {
