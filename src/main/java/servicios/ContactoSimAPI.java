@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openapitools.client.ApiClient;
+import org.openapitools.client.api.ResultadosApi;
 import org.openapitools.client.api.SolicitudApi;
 import org.openapitools.client.model.Solicitud;
 
@@ -14,6 +15,8 @@ import interfaces.InterfazContactoSim;
 import modelo.DatosSimulation;
 import modelo.DatosSolicitud;
 import modelo.Entidad;
+import modelo.Punto;
+
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -23,6 +26,7 @@ public class ContactoSimAPI implements InterfazContactoSim {
 
 	private List<Entidad> entidades;
 	private final SolicitudApi solicitudApi;
+	private final ResultadosApi resultadosApi;
 	private Logger logger;
  
     public ContactoSimAPI(Logger logger) {
@@ -30,7 +34,7 @@ public class ContactoSimAPI implements InterfazContactoSim {
     	ApiClient cliente = new ApiClient();
         cliente.setBasePath("http://localhost:8081");
         this.solicitudApi = new SolicitudApi(cliente);
-        
+        this.resultadosApi = new ResultadosApi(cliente);
     	entidades = new ArrayList<>();
     	Entidad e1 = new Entidad(), e2 = new Entidad();
     	e1.setId(1);
@@ -83,7 +87,61 @@ public class ContactoSimAPI implements InterfazContactoSim {
 
 	@Override
 	public DatosSimulation descargarDatos(int ticket) {
-		return new DatosSimulation();
+	    DatosSimulation ds = new DatosSimulation();
+	    ds.setPuntos(new HashMap<>()); 
+	    int tiempoMaximo = 0;
+
+	    try {
+	        Object respuesta = resultadosApi.resultadosPost("usuarioPrueba", ticket).block();
+
+	        if (respuesta instanceof Map) {
+	            Map<String, Object> mapaRespuesta = (Map<String, Object>) respuesta;
+
+	            if ((Boolean) mapaRespuesta.get("done")) {
+	                Object dataObj = mapaRespuesta.get("data");
+	                String respuestaTexto = dataObj != null ? dataObj.toString() : "";
+
+	                if (!respuestaTexto.isEmpty()) {
+	                    String[] lineas = respuestaTexto.split("\n");
+
+	                    int ancho = Integer.parseInt(lineas[0].trim());
+	                    ds.setAnchoTablero(ancho);
+
+	                    for (int i = 1; i < lineas.length; i++) {
+	                        String linea = lineas[i].trim();
+	                        if (linea.isEmpty()) continue;
+
+	                        String[] partes = linea.split(",");
+	                        if (partes.length == 4) {
+	                            int t = Integer.parseInt(partes[0].trim()); 
+	                            int y = Integer.parseInt(partes[1].trim());
+	                            int x = Integer.parseInt(partes[2].trim());
+	                            String color = partes[3].trim();
+
+	                            Punto p = new Punto();
+	                            p.setX(x);
+	                            p.setY(y);
+	                            p.setColor(color);
+
+	                            ds.getPuntos().computeIfAbsent(t, k -> new ArrayList<>()).add(p);
+
+	                            if (t >= tiempoMaximo) {
+	                            	// Se empieza contando en el 0.
+	                                tiempoMaximo = t + 1;
+	                            }
+	                        }
+	                    }
+	                    ds.setMaxSegundos(tiempoMaximo);
+	                }
+	            } else {
+	                logger.error("ErrorVM descargando datos: " + mapaRespuesta.get("errorMessage"));
+	            }
+	        }
+	    } catch (Exception ex) {
+	        logger.error("Error procesando los datos de la API: " + ex.getMessage());
+	    }
+
+	    return ds;
 	}
 
 	@Override
