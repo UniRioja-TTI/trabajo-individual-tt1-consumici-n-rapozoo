@@ -14,5 +14,5 @@ public interface InterfazContactoSim {
 	public DatosSimulation descargarDatos(int ticket);
 	// Permite pedirle al servidor los datos de las entidades.
 	public List<Entidad> getEntities();
-	public boolean isValidEntityId(int ticket);
+	public boolean isValidEntityId(int id);
 }
