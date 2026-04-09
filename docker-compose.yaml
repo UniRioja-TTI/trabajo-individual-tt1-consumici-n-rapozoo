@@ -1,0 +1,18 @@
+services:
+  interfaz-simulador:
+    image: trabajoindividual-spring:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - red-simulador
+    depends_on:
+      - servicio-simulacion 
+
+  servicio-simulacion:
+    image: javillour/servicio-tt1:amd64
+    networks:
+      - red-simulador
+
+networks:
+  red-simulador:
+    driver: bridge

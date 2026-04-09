@@ -32,7 +32,7 @@ public class ContactoSimAPI implements InterfazContactoSim {
     public ContactoSimAPI(Logger logger) {
     	this.logger = logger;
     	ApiClient cliente = new ApiClient();
-        cliente.setBasePath("http://localhost:8081");
+        cliente.setBasePath("http://servicio-simulacion:8080");
         this.solicitudApi = new SolicitudApi(cliente);
         this.resultadosApi = new ResultadosApi(cliente);
     	entidades = new ArrayList<>();

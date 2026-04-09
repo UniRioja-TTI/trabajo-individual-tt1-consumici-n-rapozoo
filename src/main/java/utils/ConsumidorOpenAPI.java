@@ -13,7 +13,7 @@ public class ConsumidorOpenAPI {
 
     public ConsumidorOpenAPI() {
         ApiClient cliente = new ApiClient();
-        cliente.setBasePath("http://localhost:8081"); 
+        cliente.setBasePath("http://servicio-simulacion:8080"); 
         this.resultadosApi = new ResultadosApi(cliente);
     }
 
